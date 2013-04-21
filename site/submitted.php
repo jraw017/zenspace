@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>ZenSpace » Done!</title>
+    <title>ZenSpace » Submitted to NASA!</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -52,7 +52,7 @@
         <div class="span12">
           <h2 class="text-center">Success!</h2>
           <div style="text-align: center; margin-left: auto; margin-right: auto;">
-          <p>Thanks for registering for ZenSpace! You are now able to submit your own zen and comment on other's zen posts.</p>
+          <p>Your feedback has been successfully sent to NASA! Thanks for your input.</p>
           </div>
         </div>
         </div>

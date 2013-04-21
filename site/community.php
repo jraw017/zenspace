@@ -50,9 +50,9 @@
       <!-- Example row of columns -->
       <div class="row-fluid">
         <div class="span12">
-          <h2 class="text-center">Success!</h2>
+          <h2 class="text-center">Coming Soon!</h2>
           <div style="text-align: center; margin-left: auto; margin-right: auto;">
-          <p>Thanks for registering for ZenSpace! You are now able to submit your own zen and comment on other's zen posts.</p>
+          <p>A place to share your opinions with others and view live twitter updates.</p>
           </div>
         </div>
         </div>

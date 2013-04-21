@@ -79,18 +79,18 @@ if($_SESSION['logged_in'] != "Yessir"){
           <form id="submit_zen" action="doSubmit.php" method="post">
             <div class="control-group">
               <div class="controls">
-                <textarea id="emotions" rows="1" placeholder="How are you feeling?" class="input-xxlarge" style="width: 100%; resize: none;"></textarea>
+                <textarea id="emotions" name="emotions" rows="1" placeholder="How are you feeling?" class="input-xxlarge" style="width: 100%; resize: none;"></textarea>
                 <span class="help-block">type an emotion and press enter (add as many as you'd like!)</span>
   			  </div>
   			</div>
   			<div class="control-group">
     			<div class="controls">
-                    <textarea id="comments" rows="5" placeholder="Any further comments?" class="input-xxlarge" style="width: 100%; resize: none;"></textarea>
+                    <textarea id="comments" name="comments" rows="5" placeholder="Any further comments?" class="input-xxlarge" style="width: 100%; resize: none;"></textarea>
     			</div>
   			</div>
   			<div class="control-group">
     			<div class="controls">
-      				<button type="submit" class="btn btn-success btn-large" style="width: 100%; clear: both;" data-loading-text="Transmitting..."><i class="icon-white icon-globe"></i> Transmit to NASA</button>
+      				<button type="submit" class="btn btn-success btn-large" style="width: 100%; clear: both;"><i class="icon-white icon-globe"></i> Transmit to NASA</button>
     			</div>
   			</div>
 		</form>
@@ -116,29 +116,10 @@ if($_SESSION['logged_in'] != "Yessir"){
     <script type="text/javascript">
     $('#emotions')
         .textext({
-            plugins : 'tags autocomplete'
+            plugins : 'tags'
         })
         .bind('getSuggestions', function(e, data)
         {
-            var list = [
-                    'Basic',
-                    'Closure',
-                    'Cobol',
-                    'Delphi',
-                    'Erlang',
-                    'Fortran',
-                    'Go',
-                    'Groovy',
-                    'Haskel',
-                    'Java',
-                    'JavaScript',
-                    'OCAML',
-                    'PHP',
-                    'Perl',
-                    'Python',
-                    'Ruby',
-                    'Scala'
-                ],
                 textext = $(e.target).textext()[0],
                 query = (data ? data.query : '') || ''
                 ;

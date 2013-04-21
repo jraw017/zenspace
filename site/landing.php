@@ -31,6 +31,17 @@ if ($user) {
     // Proceed knowing you have a logged in user who's authenticated.
 	$token = $facebook->getAccessToken();
     $user_profile = $facebook->api('/me?access_token='.$token.'');
+	
+	// check user is registered
+	$check_if_registered = mysql_query("SELECT user_fbid FROM zen_user WHERE user_fbid = '".$user_profile['id']."' LIMIT 1");
+	$isRegistered = mysql_num_rows($check_if_registered);
+	
+	if($isRegistered < 1){
+		$facebook->destroySession();
+		session_destroy();
+		header('location: index.php');
+		exit();
+	}		
 		
 	// set logged in session
 	$_SESSION['logged_in'] = "Yessir";

@@ -4,6 +4,9 @@ define('IN_FILE', TRUE);
 include('./inc/php/functions.php');
 include('./inc/php/dbconfig.php');
 require_once('./inc/php/facebook.php');
+
+// get tags from db
+$get_tags = mysql_query("SELECT tag_value FROM zen_tags");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -90,7 +93,9 @@ require_once('./inc/php/facebook.php');
       <!-- Example row of columns -->
       <div class="row-fluid">
         <div class="span12">
-        	<p>Data</p>
+        	<div id="wordcloud" style="margin-left: auto; margin-right: auto; text-align: center;"></div>
+            <div id="genderpie" style="margin-left: auto; margin-right: auto; text-align: center;"></div>
+            <div id="tagpie" style="margin-left: auto; margin-right: auto; text-align: center;"></div>
         </div>
       </div>
       
@@ -109,42 +114,85 @@ require_once('./inc/php/facebook.php');
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="./inc/js/bootstrap.js"></script>
     <script src="./inc/js/textext.js"></script>
-    <script type="text/javascript">
-    $('#emotions')
-        .textext({
-            plugins : 'tags autocomplete'
-        })
-        .bind('getSuggestions', function(e, data)
-        {
-            var list = [
-                    'Basic',
-                    'Closure',
-                    'Cobol',
-                    'Delphi',
-                    'Erlang',
-                    'Fortran',
-                    'Go',
-                    'Groovy',
-                    'Haskel',
-                    'Java',
-                    'JavaScript',
-                    'OCAML',
-                    'PHP',
-                    'Perl',
-                    'Python',
-                    'Ruby',
-                    'Scala'
-                ],
-                textext = $(e.target).textext()[0],
-                query = (data ? data.query : '') || ''
-                ;
+    <script src="./inc/js/d3.v3.min.js"></script>
+    <script src="./inc/js/d3.layout.cloud.js"></script>
+    <script>
+  var fill = d3.scale.category20();
 
-            $(this).trigger(
-                'setSuggestions',
-                { result : textext.itemManager().filter(list, query) }
-            );
+  d3.layout.cloud().size([900, 400])
+      .words([<?php while($tags = mysql_fetch_array($get_tags, MYSQL_ASSOC)){ echo "\"" . $tags['tag_value'] . "\","; } ?>].map(function(d) {
+        return {text: d, size: 30 + Math.random() * 90};
+      }))
+      .rotate(function() { return ~~(Math.random() * 2) * 90; })
+      .font("Impact")
+      .fontSize(function(d) { return d.size; })
+      .on("end", draw)
+      .start();
+
+  function draw(words) {
+    d3.select("#wordcloud").append("svg")
+        .attr("width", 900)
+        .attr("height", 400)
+      .append("g")
+        .attr("transform", "translate(500,200)")
+      .selectAll("text")
+        .data(words)
+      .enter().append("text")
+        .style("font-size", function(d) { return d.size + "px"; })
+        .style("font-family", "Impact")
+        .style("fill", function(d, i) { return fill(i); })
+        .attr("text-anchor", "middle")
+        .attr("transform", function(d) {
+          return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
         })
-        ;
-	</script>
+        .text(function(d) { return d.text; });
+  }
+		</script>
+        <script>
+
+var width = 960,
+    height = 500,
+    radius = Math.min(width, height) / 2;
+
+var color = d3.scale.ordinal()
+    .range(["#ec1c24", "#0066b2"]);
+
+var arc = d3.svg.arc()
+    .outerRadius(radius - 10)
+    .innerRadius(0);
+
+var pie = d3.layout.pie()
+    .sort(null)
+    .value(function(d) { return d.count; });
+
+var svg = d3.select("#genderpie").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+d3.csv("getGenderData.php", function(error, data) {
+
+  data.forEach(function(d) {
+    d.count = +d.count;
+  });
+
+  var g = svg.selectAll(".arc")
+      .data(pie(data))
+    .enter().append("g")
+      .attr("class", "arc");
+
+  g.append("path")
+      .attr("d", arc)
+      .style("fill", function(d) { return color(d.data.gender); });
+
+  g.append("text")
+      .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+      .attr("dy", ".35em")
+      .style("text-anchor", "middle")
+      .text(function(d) { return d.data.gender + " (" + d.data.count + ")"; });
+
+});
+</script>
   </body>
 </html>
